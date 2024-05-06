@@ -2,6 +2,7 @@
 import pygame as pg
 from constants import *
 
+
 class Window:
     def __init__(self):
         pg.init()
@@ -14,7 +15,7 @@ class Window:
         self.bg_image = pg.transform.scale(self.bg_image, self.window_size)
 
         self.buttons = {}
-        self.view = 'start'
+        self.view = 'menu'
         self.slider_active = False
         self.selected_img = None
 

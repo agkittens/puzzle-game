@@ -2,11 +2,17 @@ from tkinter import filedialog
 import sys
 import tkinter as tk
 from window import *
+from puzzle import *
+import random
 
+temp = pg.image.load(PUZZLE)
+temp = pg.transform.scale(temp, (500, 500))
 
 window = Window()
+puzzle = Puzzle(temp, 3)
 font = pg.font.Font(None, 28)
 status = font.render('', True, 'white')
+
 
 while True:
     for event in pg.event.get():
@@ -14,7 +20,8 @@ while True:
             pg.quit()
             sys.exit()
         elif event.type == pg.MOUSEBUTTONDOWN:
-            if window.buttons['start'].collidepoint(event.pos):pass
+            if window.buttons['start'].collidepoint(event.pos):
+                window.view = 'game'
 
             elif window.buttons['collection'].collidepoint(event.pos):
                 window.view = 'collection'
@@ -24,7 +31,7 @@ while True:
                 sys.exit()
 
             elif window.buttons['x'].collidepoint(event.pos):
-                window.view = 'start'
+                window.view = 'menu'
                 status = font.render('', True, 'white')
 
             elif window.buttons['load'].collidepoint(event.pos):
@@ -43,8 +50,16 @@ while True:
     window.window.blit(window.bg_image, (0,0))
 
     #buttons
-    if window.view == 'start':
+    if window.view == 'menu':
         window.create_buttons()
+
+    elif window.view == 'game':
+        random.shuffle(puzzle.pieces)
+
+        for piece in puzzle.pieces:
+            window.window.blit(piece[0],
+                        (piece[1].left + puzzle.spacing // 2, piece[1].top + puzzle.spacing // 2))
+
 
     elif window.view == 'collection':
         window.create_collection_options()
