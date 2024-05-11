@@ -48,23 +48,49 @@ class Window:
         self.buttons['x'] = X_button
         self.draw_buttons(X_button, name = 'X')
 
-        puzzle1 = pg.image.load(PUZZLE)
+        puzzle1 = pg.image.load(PUZZLE1)
         puzzle1 = pg.transform.scale(puzzle1, (100, 100))
         puzzle1_button = pg.Rect(100,250,100,100)
         self.buttons['puzzle1'] = puzzle1_button
         self.draw_buttons(puzzle1_button, name='')
         self.window.blit(puzzle1, puzzle1_button)
 
-        puzzle2 = pg.image.load(PUZZLE)
+        puzzle2 = pg.image.load(PUZZLE2)
         puzzle2 = pg.transform.scale(puzzle2, (100, 100))
         puzzle2_button = pg.Rect(250,250,100,100)
         self.buttons['puzzle2'] = puzzle2_button
         self.draw_buttons(puzzle2_button, name='')
         self.window.blit(puzzle2, puzzle2_button)
 
-        puzzle3 = pg.image.load(PUZZLE)
+        puzzle3 = pg.image.load(PUZZLE3)
         puzzle3 = pg.transform.scale(puzzle3, (100, 100))
         puzzle3_button = pg.Rect(400,250,100,100)
         self.buttons['puzzle3'] = puzzle3_button
         self.draw_buttons(puzzle3_button, name='')
         self.window.blit(puzzle3, puzzle3_button)
+
+        puzzle4 = pg.image.load(PUZZLE4)
+        puzzle4 = pg.transform.scale(puzzle4, (100, 100))
+        puzzle4_button = pg.Rect(100,400,100,100)
+        self.buttons['puzzle4'] = puzzle4_button
+        self.draw_buttons(puzzle4_button, name='')
+        self.window.blit(puzzle4, puzzle4_button)
+
+        puzzle5 = pg.image.load(PUZZLE5)
+        puzzle5 = pg.transform.scale(puzzle5, (100, 100))
+        puzzle5_button = pg.Rect(250,400,100,100)
+        self.buttons['puzzle5'] = puzzle5_button
+        self.draw_buttons(puzzle5_button, name='')
+        self.window.blit(puzzle5, puzzle5_button)
+
+        puzzle6 = pg.image.load(PUZZLE6)
+        puzzle6 = pg.transform.scale(puzzle6, (100, 100))
+        puzzle6_button = pg.Rect(400,400,100,100)
+        self.buttons['puzzle6'] = puzzle6_button
+        self.draw_buttons(puzzle6_button, name='')
+        self.window.blit(puzzle6, puzzle6_button)
+
+    def create_game_buttons(self):
+        X_button = pg.Rect(700,20,30,30)
+        self.buttons['x'] = X_button
+        self.draw_buttons(X_button, name = 'X')

@@ -3,9 +3,8 @@ import sys
 import tkinter as tk
 from window import *
 from puzzle import *
-import random
 
-temp = pg.image.load(PUZZLE)
+temp = pg.image.load(PUZZLE1)
 temp = pg.transform.scale(temp, (500, 500))
 
 window = Window()
@@ -14,11 +13,13 @@ font = pg.font.Font(None, 28)
 status = font.render('', True, 'white')
 
 
+
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
             sys.exit()
+
         elif event.type == pg.MOUSEBUTTONDOWN:
             if window.buttons['start'].collidepoint(event.pos):
                 window.view = 'game'
@@ -46,6 +47,36 @@ while True:
 
                 else: status = font.render('', True, 'white')
 
+            elif window.buttons['puzzle1'].collidepoint(event.pos):
+                temp = pg.image.load(PUZZLE1)
+                temp = pg.transform.scale(temp, (500, 500))
+                puzzle.load_puzzle(temp)
+
+            elif window.buttons['puzzle2'].collidepoint(event.pos):
+                temp = pg.image.load(PUZZLE2)
+                temp = pg.transform.scale(temp, (500, 500))
+                puzzle.load_puzzle(temp)
+
+            elif window.buttons['puzzle3'].collidepoint(event.pos):
+                temp = pg.image.load(PUZZLE3)
+                temp = pg.transform.scale(temp, (500, 500))
+                puzzle.load_puzzle(temp)
+
+            elif window.buttons['puzzle4'].collidepoint(event.pos):
+                temp = pg.image.load(PUZZLE4)
+                temp = pg.transform.scale(temp, (500, 500))
+                puzzle.load_puzzle(temp)
+
+            elif window.buttons['puzzle5'].collidepoint(event.pos):
+                temp = pg.image.load(PUZZLE5)
+                temp = pg.transform.scale(temp, (500, 500))
+                puzzle.load_puzzle(temp)
+
+            elif window.buttons['puzzle6'].collidepoint(event.pos):
+                temp = pg.image.load(PUZZLE6)
+                temp = pg.transform.scale(temp, (500, 500))
+                puzzle.load_puzzle(temp)
+
 
     window.window.blit(window.bg_image, (0,0))
 
@@ -54,11 +85,17 @@ while True:
         window.create_buttons()
 
     elif window.view == 'game':
-        random.shuffle(puzzle.pieces)
+        window.create_game_buttons()
+        colored_surface = pg.Surface((puzzle.puzzle_w_h*3+puzzle.spacing*3+37,
+                                      puzzle.puzzle_w_h*3+puzzle.spacing*3+37))
+
+        colored_surface.fill((25, 34, 51))
+        window.window.blit(colored_surface, (100, 100))
 
         for piece in puzzle.pieces:
             window.window.blit(piece[0],
-                        (piece[1].left + puzzle.spacing // 2, piece[1].top + puzzle.spacing // 2))
+                        (130+ piece[1].left + puzzle.spacing // 2, 130 +piece[1].top + puzzle.spacing // 2))
+
 
 
     elif window.view == 'collection':
