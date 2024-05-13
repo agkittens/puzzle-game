@@ -18,6 +18,13 @@ class Window:
         self.slider_active = False
         self.imgs = []
 
+    def display_title(self):
+        title = pg.image.load(TITLE)
+        # title = pg.transform.scale(title, (480, 480))
+        title_rect = pg.Rect(140, 5, 100, 100)
+        self.window.blit(title, (title_rect.x, title_rect.y))
+
+
     def draw_buttons(self, rect: pg.Rect, name='Start'):
         pg.draw.rect(self.window, BUTTON_COLOR, rect, border_radius=10)
         font = pg.font.Font(None, 28)

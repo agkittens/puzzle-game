@@ -89,6 +89,7 @@ while True:
     # buttons
     if window.view == 'menu':
         window.display_menu_buttons()
+        window.display_title()
 
     elif window.view == 'game':
         window.display_game_buttons()
