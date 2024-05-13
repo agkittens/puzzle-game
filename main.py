@@ -12,8 +12,6 @@ puzzle = Puzzle(temp, 3)
 font = pg.font.Font(None, 28)
 status = font.render('', True, 'white')
 
-
-
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -21,7 +19,7 @@ while True:
             sys.exit()
 
         elif event.type == pg.MOUSEBUTTONDOWN:
-            
+
             if window.check_condition('start', event.pos):
                 window.view = 'game'
 
@@ -48,7 +46,8 @@ while True:
                     image = pg.transform.scale(image, (500, 500))
                     puzzle.load_puzzle(image)
 
-                else: status = font.render('', True, 'white')
+                else:
+                    status = font.render('', True, 'white')
 
             elif window.check_condition('puzzle1', event.pos):
                 temp = pg.image.load(PUZZLE1)
@@ -80,26 +79,27 @@ while True:
                 temp = pg.transform.scale(temp, (500, 500))
                 puzzle.load_puzzle(temp)
 
+            if window.view == 'game':
+                puzzle.click_piece(event.pos)
+
     window.window.blit(window.bg_image, (0, 0))
     window.create_buttons()
     window.create_collection_options()
 
-    #buttons
+    # buttons
     if window.view == 'menu':
         window.display_menu_buttons()
 
     elif window.view == 'game':
         window.display_game_buttons()
-        colored_surface = pg.Surface((puzzle.puzzle_w_h*3+puzzle.spacing*3+37,
-                                      puzzle.puzzle_w_h*3+puzzle.spacing*3+37), pg.SRCALPHA)
+        colored_surface = pg.Surface((puzzle.puzzle_w_h * 3 + puzzle.spacing * 3 + 37,
+                                      puzzle.puzzle_w_h * 3 + puzzle.spacing * 3 + 37), pg.SRCALPHA)
 
         colored_surface.fill((61, 155, 179))
         window.add_rounded_corners(colored_surface, 20)
         window.window.blit(colored_surface, (100, 100))
 
-        for piece in puzzle.pieces:
-            window.window.blit(piece[0],
-                        (130+ piece[1].left + puzzle.spacing // 2, 130 + piece[1].top + puzzle.spacing // 2))
+        window.update_pieces(puzzle)
 
     elif window.view == 'collection':
         window.display_collection_buttons()
