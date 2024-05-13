@@ -11,6 +11,8 @@ class Puzzle:
         self.spacing = 7
 
         self.pieces = self.cut_to_pieces()
+        self.prev_puzzle = None
+        self.next_puzzle = None
 
     def load_puzzle(self,img):
         self.object = img
@@ -36,7 +38,7 @@ class Puzzle:
             surfaces[idx].blit(img_pieces[idx],(0,0))
             pieces.append((surfaces[idx], rect))
 
-        return pieces[:]
+        return pieces
 
     def check_click(self, pos):
         for idx, piece in enumerate(self.pieces):
