@@ -1,4 +1,4 @@
-# sliding_puzzle
+# under the sea
 uni project - sliding puzzle game
 contains:
 - time measurement
