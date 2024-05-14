@@ -10,5 +10,7 @@ PUZZLE4 = 'assets/puzzle4.jpg'
 PUZZLE5 = 'assets/puzzle5.jpg'
 PUZZLE6 = 'assets/puzzle6.jpg'
 BUTTON_COLOR = '#cce084'
+SLIDER_COLOR = '#42aec9'
+SLIDER_DOT_COLOR = '#286878'
 
 TITLE = 'assets/title.png'

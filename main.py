@@ -1,6 +1,4 @@
-from tkinter import filedialog
 import sys
-import tkinter as tk
 from window import *
 from puzzle import *
 
@@ -8,6 +6,7 @@ temp = pg.image.load(PUZZLE1)
 temp = pg.transform.scale(temp, (500, 500))
 
 window = Window()
+window.selected_img = temp
 puzzle = Puzzle(temp, 3)
 font = pg.font.Font(None, 28)
 status = font.render('', True, 'white')
@@ -35,56 +34,46 @@ while True:
                 status = font.render('', True, 'white')
 
             elif window.check_condition('load', event.pos):
-                folder_window = tk.Tk()
-                folder_window.withdraw()
-                path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
-                if path:
-                    image = pg.image.load(path)
-                    folder_window.destroy()
-                    status = font.render('Loaded', True, 'white')
-
-                    image = pg.transform.scale(image, (500, 500))
-                    puzzle.load_puzzle(image)
-
-                else:
-                    status = font.render('', True, 'white')
+                status = window.display_load_window(font, puzzle)
 
             elif window.check_condition('puzzle1', event.pos):
-                temp = pg.image.load(PUZZLE1)
-                temp = pg.transform.scale(temp, (500, 500))
-                puzzle.load_puzzle(temp)
+                window.display_puzzle_icons(PUZZLE1, puzzle)
 
             elif window.check_condition('puzzle2', event.pos):
-                temp = pg.image.load(PUZZLE2)
-                temp = pg.transform.scale(temp, (500, 500))
-                puzzle.load_puzzle(temp)
+                window.display_puzzle_icons(PUZZLE2, puzzle)
 
             elif window.check_condition('puzzle3', event.pos):
-                temp = pg.image.load(PUZZLE3)
-                temp = pg.transform.scale(temp, (500, 500))
-                puzzle.load_puzzle(temp)
+                window.display_puzzle_icons(PUZZLE3, puzzle)
 
             elif window.check_condition('puzzle4', event.pos):
-                temp = pg.image.load(PUZZLE4)
-                temp = pg.transform.scale(temp, (500, 500))
-                puzzle.load_puzzle(temp)
+                window.display_puzzle_icons(PUZZLE4, puzzle)
 
             elif window.check_condition('puzzle5', event.pos):
-                temp = pg.image.load(PUZZLE5)
-                temp = pg.transform.scale(temp, (500, 500))
-                puzzle.load_puzzle(temp)
+                window.display_puzzle_icons(PUZZLE5, puzzle)
 
             elif window.check_condition('puzzle6', event.pos):
-                temp = pg.image.load(PUZZLE6)
-                temp = pg.transform.scale(temp, (500, 500))
-                puzzle.load_puzzle(temp)
+                window.display_puzzle_icons(PUZZLE6, puzzle)
 
             if window.view == 'game':
                 puzzle.click_piece(event.pos)
 
+            if window.view == 'collection':
+                if window.buttons['circle'][0].collidepoint(event.pos):
+                    window.slider_active = True
+
+
+        elif event.type == pg.MOUSEBUTTONUP:
+            if window.view == 'collection':
+                window.slider_active = False
+                window.display_puzzle_icons(None, puzzle)
+
+        elif event.type == pg.MOUSEMOTION:
+            if window.view == 'collection':
+                if window.slider_active:
+                    window.move_slider_dot(event.pos)
+
+
     window.window.blit(window.bg_image, (0, 0))
-    window.create_buttons()
-    window.create_collection_options()
 
     # buttons
     if window.view == 'menu':
@@ -93,8 +82,9 @@ while True:
 
     elif window.view == 'game':
         window.display_game_buttons()
-        colored_surface = pg.Surface((puzzle.puzzle_w_h * 3 + puzzle.spacing * 3 + 37,
-                                      puzzle.puzzle_w_h * 3 + puzzle.spacing * 3 + 37), pg.SRCALPHA)
+        colored_surface = pg.Surface((puzzle.puzzle_w_h * puzzle.size + puzzle.spacing * puzzle.size,
+                                      puzzle.puzzle_w_h * puzzle.size + puzzle.spacing * puzzle.size),
+                                      pg.SRCALPHA)
 
         colored_surface.fill((61, 155, 179))
         window.add_rounded_corners(colored_surface, 20)

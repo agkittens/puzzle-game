@@ -4,7 +4,7 @@ import pygame as pg
 
 
 class Puzzle:
-    def __init__(self, img, size):
+    def __init__(self, img, size: int):
         self.object = img
         self.size = size
         self.puzzle_w_h = self.object.get_width() // self.size
@@ -17,19 +17,23 @@ class Puzzle:
         self.next_puzzle = None
 
 
-    def load_puzzle(self, img):
+    def load_puzzle(self, img,size):
         self.object = img
         self.img_pieces = []
+        self.update_size_params(size)
         self.selected_puzzle = None
         self.next_puzzle = None
         self.pieces = self.cut_to_pieces()
 
+    def update_size_params(self,size):
+        self.size = size
+        self.puzzle_w_h = self.object.get_width() // self.size
 
     def cut_to_pieces(self):
         pieces = {}
         rects = []
         width = height = self.puzzle_w_h
-        surfaces = [pg.Surface((width - self.spacing, height - self.spacing)) for _ in range(9)]
+        surfaces = [pg.Surface((width - self.spacing, height - self.spacing)) for _ in range(self.size**2)]
         for i in range(self.size):
             for j in range(self.size):
                 piece_rect = pg.Rect(j * width, i * height, width, height)
@@ -47,7 +51,7 @@ class Puzzle:
 
         return pieces
 
-    def click_piece(self, pos):
+    def click_piece(self, pos: tuple):
         if self.selected_puzzle is None:
             self.selected_puzzle = self.remember_piece(pos)
             self.next_puzzle = None
@@ -59,7 +63,7 @@ class Puzzle:
             self.move_pieces()
             self.selected_puzzle = None
 
-    def remember_piece(self, pos):
+    def remember_piece(self, pos: tuple):
         for key, piece in self.pieces.items():
             if piece[1].collidepoint(pos[0] - self.offset, pos[1] - self.offset):
                 return piece[2], key
@@ -79,3 +83,4 @@ class Puzzle:
 
             self.img_pieces[key_s] = self.img_pieces[key_n]
             self.img_pieces[key_n] = temp
+

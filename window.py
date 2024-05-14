@@ -1,5 +1,7 @@
 import pygame as pg
+import tkinter as tk
 from constants import *
+from tkinter import filedialog
 
 
 class Window:
@@ -15,22 +17,28 @@ class Window:
 
         self.buttons = {}
         self.view = 'menu'
-        self.slider_active = False
         self.imgs = []
+
+        self.slider_active = False
+        self.slider_properties = {'width': 200,
+                                  'height': 50,
+                                  'x': 150,
+                                  'y': 150,
+                                  'min': 0,
+                                  'max': 100,
+                                  'value': 0,
+                                  'radius': 10
+                                  }
+
+        self.selected_img = None
+        self.create_buttons()
+        self.create_collection_options()
+
 
     def display_title(self):
         title = pg.image.load(TITLE)
-        # title = pg.transform.scale(title, (480, 480))
         title_rect = pg.Rect(140, 5, 100, 100)
         self.window.blit(title, (title_rect.x, title_rect.y))
-
-
-    def draw_buttons(self, rect: pg.Rect, name='Start'):
-        pg.draw.rect(self.window, BUTTON_COLOR, rect, border_radius=10)
-        font = pg.font.Font(None, 28)
-        text_surface = font.render(name, True, 'white')
-        text_rect = text_surface.get_rect(center=rect.center)
-        self.window.blit(text_surface, text_rect)
 
     def create_buttons(self):
         start_button = pg.Rect(310, 400, 150, 45)
@@ -79,7 +87,16 @@ class Window:
         puzzle6_button = pg.Rect(400, 400, 100, 100)
         self.buttons['puzzle6'] = [puzzle6_button, False]
 
+        self.create_slider()
+
         self.imgs = [puzzle1, puzzle2, puzzle3, puzzle4, puzzle5, puzzle6]
+
+    def draw_buttons(self, rect: pg.Rect, name='Start', radius =10, color = BUTTON_COLOR):
+        pg.draw.rect(self.window, color, rect, border_radius=radius)
+        font = pg.font.Font(None, 28)
+        text_surface = font.render(name, True, 'white')
+        text_rect = text_surface.get_rect(center=rect.center)
+        self.window.blit(text_surface, text_rect)
 
     def display_menu_buttons(self):
         self.deactivate_buttons()
@@ -114,6 +131,9 @@ class Window:
         self.draw_buttons(self.buttons['puzzle6'][0], name='')
         self.window.blit(self.imgs[5], self.buttons['puzzle6'][0])
 
+        self.draw_buttons(self.buttons['slider'][0], name='', color=SLIDER_COLOR)
+        self.draw_buttons(self.buttons['circle'][0], name='', radius=30, color=SLIDER_DOT_COLOR)
+
     def display_game_buttons(self):
         self.deactivate_buttons()
         self.activate_buttons(['x'])
@@ -128,18 +148,9 @@ class Window:
         for button in self.buttons.values():
             button[1] = False
 
-    @staticmethod
-    def add_rounded_corners(surface, radius):
-        width, height = surface.get_size()
-        mask = pg.Surface((width, height), pg.SRCALPHA)
-        mask.fill((0, 0, 0, 0))
-        pg.draw.rect(mask, (255, 255, 255, 255), (0, 0, width, height), border_radius=radius)
-        surface.blit(mask, (0, 0), special_flags=pg.BLEND_RGBA_MIN)
-
-    def check_condition(self, key, pos):
+    def check_condition(self, key: str, pos: tuple):
         if self.buttons[key][0].collidepoint(pos) and self.buttons[key][1]:
             return True
-
         else:
             return False
 
@@ -147,3 +158,64 @@ class Window:
         for piece in puzzle.pieces.values():
             self.window.blit(piece[0],
                              (130 + piece[1].left + puzzle.spacing // 2, 130 + piece[1].top + puzzle.spacing // 2))
+
+    def create_slider(self):
+        slider = pg.Rect(160, 120, 430, 30)
+        self.buttons['slider'] = [slider, False]
+
+        circle = pg.Rect(160,120,30,30)
+        self.buttons['circle'] = [circle, False]
+
+    def move_slider_dot(self,pos):
+        if pos[0] in range(160,430+130):
+            self.buttons['circle'][0].update((pos[0], 120), (30,30))
+
+    def define_size(self):
+        x = self.buttons['circle'][0].left
+        min = 160
+        max = 560
+        steps = 60
+        size = 3
+
+        if x == min: size = 3
+        elif x == max: size = 9
+
+        else:
+            size = x//steps
+
+        return size
+
+    def display_puzzle_icons(self, number: str or None, puzzle):
+        if number is not None:
+            temp = pg.image.load(number)
+            temp = pg.transform.scale(temp, (500, 500))
+            self.selected_img = temp
+
+        size = self.define_size()
+        puzzle.load_puzzle(self.selected_img, size)
+
+    def display_load_window(self, font: pg.font.Font, puzzle):
+        folder_window = tk.Tk()
+        folder_window.withdraw()
+        path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.bmp;*.gif")])
+        if path:
+            image = pg.image.load(path)
+            folder_window.destroy()
+            status = font.render('Loaded', True, 'white')
+
+            image = pg.transform.scale(image, (500, 500))
+            size = self.define_size()
+            puzzle.load_puzzle(image, size)
+
+        else:
+            status = font.render('', True, 'white')
+
+        return status
+
+    @staticmethod
+    def add_rounded_corners(surface: pg.Surface, radius: int):
+        width, height = surface.get_size()
+        mask = pg.Surface((width, height), pg.SRCALPHA)
+        mask.fill((0, 0, 0, 0))
+        pg.draw.rect(mask, (255, 255, 255, 255), (0, 0, width, height), border_radius=radius)
+        surface.blit(mask, (0, 0), special_flags=pg.BLEND_RGBA_MIN)
