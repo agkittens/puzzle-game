@@ -18,22 +18,17 @@ class Window:
         self.buttons = {}
         self.view = 'menu'
         self.imgs = []
+        self.surfaces = []
 
         self.slider_active = False
-        self.slider_properties = {'width': 200,
-                                  'height': 50,
-                                  'x': 150,
-                                  'y': 150,
-                                  'min': 0,
-                                  'max': 100,
-                                  'value': 0,
-                                  'radius': 10
-                                  }
+
+        self.timer_font = pg.font.Font(None, 38)
+        self.start_time = 0
+        self.time_limit = 15 * 60 * 1000
 
         self.selected_img = None
         self.create_buttons()
         self.create_collection_options()
-
 
     def display_title(self):
         title = pg.image.load(TITLE)
@@ -57,39 +52,37 @@ class Window:
         X_button = pg.Rect(700, 20, 30, 30)
         self.buttons['x'] = [X_button, False]
 
-        puzzle1 = pg.image.load(PUZZLE1)
-        puzzle1 = pg.transform.scale(puzzle1, (100, 100))
+        self.process_image(PUZZLE1)
+        self.process_image(PUZZLE2)
+        self.process_image(PUZZLE3)
+        self.process_image(PUZZLE4)
+        self.process_image(PUZZLE5)
+        self.process_image(PUZZLE6)
+
         puzzle1_button = pg.Rect(100, 250, 100, 100)
         self.buttons['puzzle1'] = [puzzle1_button, False]
 
-        puzzle2 = pg.image.load(PUZZLE2)
-        puzzle2 = pg.transform.scale(puzzle2, (100, 100))
         puzzle2_button = pg.Rect(250, 250, 100, 100)
         self.buttons['puzzle2'] = [puzzle2_button, False]
 
-        puzzle3 = pg.image.load(PUZZLE3)
-        puzzle3 = pg.transform.scale(puzzle3, (100, 100))
         puzzle3_button = pg.Rect(400, 250, 100, 100)
         self.buttons['puzzle3'] = [puzzle3_button, False]
 
-        puzzle4 = pg.image.load(PUZZLE4)
-        puzzle4 = pg.transform.scale(puzzle4, (100, 100))
         puzzle4_button = pg.Rect(100, 400, 100, 100)
         self.buttons['puzzle4'] = [puzzle4_button, False]
 
-        puzzle5 = pg.image.load(PUZZLE5)
-        puzzle5 = pg.transform.scale(puzzle5, (100, 100))
         puzzle5_button = pg.Rect(250, 400, 100, 100)
         self.buttons['puzzle5'] = [puzzle5_button, False]
 
-        puzzle6 = pg.image.load(PUZZLE6)
-        puzzle6 = pg.transform.scale(puzzle6, (100, 100))
         puzzle6_button = pg.Rect(400, 400, 100, 100)
         self.buttons['puzzle6'] = [puzzle6_button, False]
 
         self.create_slider()
 
-        self.imgs = [puzzle1, puzzle2, puzzle3, puzzle4, puzzle5, puzzle6]
+    def process_image(self,name):
+        puzzle = pg.image.load(name)
+        puzzle = pg.transform.scale(puzzle, (100, 100))
+        self.imgs.append(puzzle)
 
     def draw_buttons(self, rect: pg.Rect, name='Start', radius =10, color = BUTTON_COLOR):
         pg.draw.rect(self.window, color, rect, border_radius=radius)
@@ -133,6 +126,10 @@ class Window:
 
         self.draw_buttons(self.buttons['slider'][0], name='', color=SLIDER_COLOR)
         self.draw_buttons(self.buttons['circle'][0], name='', radius=30, color=SLIDER_DOT_COLOR)
+
+    def process_img_display(self, surface, rect):
+        mask_rect = surface.get_rect(center=rect.center)
+        self.window.blit(surface, mask_rect.topleft)
 
     def display_game_buttons(self):
         self.deactivate_buttons()
@@ -211,6 +208,16 @@ class Window:
             status = font.render('', True, 'white')
 
         return status
+
+
+    def display_timer(self, elapsed_time):
+        remaining_time = max(0, (self.time_limit - elapsed_time) // 1000)
+        timer_text = self.timer_font.render(f"Time left: {remaining_time // 60:02}:{remaining_time % 60:02}",
+                                            True,
+                                            '#e13aed')
+
+        self.window.blit(timer_text, (280, 50))
+
 
     @staticmethod
     def add_rounded_corners(surface: pg.Surface, radius: int):

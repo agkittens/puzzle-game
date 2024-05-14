@@ -4,6 +4,7 @@ from puzzle import *
 
 temp = pg.image.load(PUZZLE1)
 temp = pg.transform.scale(temp, (500, 500))
+clock = pg.time.Clock()
 
 window = Window()
 window.selected_img = temp
@@ -21,6 +22,7 @@ while True:
 
             if window.check_condition('start', event.pos):
                 window.view = 'game'
+                window.start_time = pg.time.get_ticks()
 
             elif window.check_condition('collection', event.pos):
                 window.view = 'collection'
@@ -81,9 +83,14 @@ while True:
         window.display_title()
 
     elif window.view == 'game':
+        elapsed_time = pg.time.get_ticks() - window.start_time
+        window.display_timer(elapsed_time)
+
+        if elapsed_time >= window.time_limit: window.view = 'menu'
+
         window.display_game_buttons()
-        colored_surface = pg.Surface((puzzle.puzzle_w_h * puzzle.size + puzzle.spacing * puzzle.size,
-                                      puzzle.puzzle_w_h * puzzle.size + puzzle.spacing * puzzle.size),
+        colored_surface = pg.Surface((puzzle.puzzle_w_h * puzzle.size + puzzle.offset//2-7,
+                                      puzzle.puzzle_w_h * puzzle.size + puzzle.offset//2-7),
                                       pg.SRCALPHA)
 
         colored_surface.fill((61, 155, 179))
