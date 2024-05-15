@@ -12,20 +12,24 @@ class Puzzle:
         self.offset = 130
 
         self.img_pieces = []
+        self.win_positions = []
+
         self.pieces = self.cut_to_pieces()
         self.selected_puzzle = None
         self.next_puzzle = None
 
+        self.win = False
 
-    def load_puzzle(self, img,size):
+    def load_puzzle(self, img, size: int):
         self.object = img
         self.img_pieces = []
+        self.win = False
         self.update_size_params(size)
         self.selected_puzzle = None
         self.next_puzzle = None
         self.pieces = self.cut_to_pieces()
 
-    def update_size_params(self,size):
+    def update_size_params(self, size: int):
         self.size = size
         self.puzzle_w_h = self.object.get_width() // self.size
 
@@ -40,6 +44,8 @@ class Puzzle:
                 rects.append(piece_rect)
 
                 self.img_pieces.append(self.object.subsurface(piece_rect))
+
+        self.win_positions = self.img_pieces.copy()
 
         random.shuffle(self.img_pieces)
 
@@ -84,3 +90,8 @@ class Puzzle:
             self.img_pieces[key_s] = self.img_pieces[key_n]
             self.img_pieces[key_n] = temp
 
+        self.check_win()
+
+    def check_win(self):
+        if self.win_positions == self.img_pieces:
+            self.win = True
