@@ -83,7 +83,10 @@ class Window:
     def process_image(self, name: str):
         puzzle = pg.image.load(name)
         puzzle = pg.transform.scale(puzzle, B_C_SIZE)
-        self.imgs.append(puzzle)
+        rounded_puzzle = self.add_rounded_corners(puzzle, 10)
+
+        self.imgs.append(rounded_puzzle)
+        # self.imgs.append(puzzle)
 
     def draw_buttons(self, rect: pg.Rect, name='Start', radius=10, color=BUTTON_COLOR):
         pg.draw.rect(self.window, color, rect, border_radius=radius)
@@ -231,6 +234,14 @@ class Window:
     def add_rounded_corners(surface: pg.Surface, radius: int):
         width, height = surface.get_size()
         mask = pg.Surface((width, height), pg.SRCALPHA)
+        rounded_surface = pg.Surface((width, height), pg.SRCALPHA)
+
         mask.fill((0, 0, 0, 0))
         pg.draw.rect(mask, (255, 255, 255, 255), (0, 0, width, height), border_radius=radius)
+
         surface.blit(mask, (0, 0), special_flags=pg.BLEND_RGBA_MIN)
+        rounded_surface.blit(mask, (0, 0))
+
+        rounded_surface.blit(surface, (0, 0), special_flags=pg.BLEND_RGBA_MIN)
+
+        return rounded_surface

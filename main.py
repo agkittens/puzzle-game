@@ -1,5 +1,4 @@
 import sys
-
 from window import *
 from puzzle import *
 
