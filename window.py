@@ -205,9 +205,9 @@ class Window:
             folder_window.destroy()
             status = font.render('Loaded', True, 'white')
 
-            image = pg.transform.scale(image, SIZE)
+            self.selected_img = pg.transform.scale(image, SIZE)
             size = self.define_size()
-            puzzle.load_puzzle(image, size)
+            puzzle.load_puzzle(self.selected_img, size)
 
         else:
             status = font.render('', True, 'white')
